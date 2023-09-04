@@ -1,0 +1,166 @@
+databaseChangeLog:
+  - changeSet:
+      id: 0
+      author: larissa.santana
+      changes:
+
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  type: varchar(10)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: firstname
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: lastname
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: password
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+
+        - createTable:
+            tableName: biological_information
+            columns:
+              - column:
+                  name: id
+                  type: varchar(10)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: birthday
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: biological_sex
+                  type: ENUM('Male','Female')
+                  constraints:
+                    nullable: false
+              - column:
+                  name: blood_type
+                  type: ENUM('A','B','AB','O')
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rh_factor
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: weight
+                  type: decimal(5,2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: biological_information
+            referencedColumnNames: id
+            referencedTableName: user
+            constraintName: fk_user_biological_info
+
+        - createTable:
+            tableName: address_information
+            columns:
+              - column:
+                  name: address_info_id
+                  type: varchar(10)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: cep
+                  type: varchar(8)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: street
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: number
+                  type: varchar(3)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: city
+                  type: varchar(28)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: state
+                  type: varchar(2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: address_information
+            referencedColumnNames: id
+            referencedTableName: user
+            constraintName: fk_user_address_info
+
+        - createTable:
+            tableName: donation
+            columns:
+              - column:
+                  name: id
+                  type: varchar(10)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: blood_center
+                  type: varchar(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: attendance_doc_index
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: user_id
+                  type: varchar(10)
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: donation
+            referencedColumnNames: id
+            referencedTableName: user
+            constraintName: fk_user_donation
