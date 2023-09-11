@@ -1,5 +1,6 @@
 package com.example.SangueAmigo.model.user;
 
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -25,13 +26,12 @@ enum BloodType {
 @EqualsAndHashCode(of = "id")
 public class BiologicalInformation {
 
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
-    private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private Date birthday;
     private BiologicalSex biologicalSex;
     private BloodType bloodType;
     private boolean rhFactor;
     private DecimalFormat weight;
-
-//    private Long userId;
+    //TODO: See how this correlation will work - private Long userId;
 }

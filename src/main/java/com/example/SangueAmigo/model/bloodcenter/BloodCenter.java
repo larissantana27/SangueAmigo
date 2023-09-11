@@ -1,6 +1,6 @@
 package com.example.SangueAmigo.model.bloodcenter;
 
-import com.example.SangueAmigo.model.user.AddressInformation;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -16,12 +16,11 @@ import lombok.NoArgsConstructor;
 public class BloodCenter {
 
     @Id @GeneratedValue(strategy = GenerationType.UUID)
-    private Long id;
+    private int id;
     private Long logoId;
-    private AddressInformation addressInformation;
+    private Long addressInformationId;
     private String operatingTime;
     private int phoneNumber;
     private String website;
-
-//    private BloodStock BloodStock;
+    // TODO: ADD private BloodStock BloodStock;
 }

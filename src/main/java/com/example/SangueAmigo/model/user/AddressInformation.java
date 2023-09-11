@@ -13,15 +13,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
+//TODO: Study @Inheritance
 public class AddressInformation {
 
-    @Id @GeneratedValue(strategy = GenerationType.UUID)
-    private Long id;
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private int cep;
     private String street;
     private int number;
     private String city;
     private String state;
-
-//    private Long userId;
+    //TODO: See how this correlation will work - private Long userId;
 }
