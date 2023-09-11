@@ -9,28 +9,34 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: varchar(10)
+                  type: int
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
               - column:
                   name: firstname
-                  type: varchar(32)
+                  type: varchar(36)
                   constraints:
                     nullable: false
               - column:
                   name: lastname
-                  type: varchar(32)
+                  type: varchar(36)
                   constraints:
                     nullable: false
               - column:
                   name: email
-                  type: varchar(32)
+                  type: varchar(36)
                   constraints:
                     nullable: false
               - column:
                   name: password
-                  type: varchar(32)
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role
+                  type: text
                   constraints:
                     nullable: false
 
@@ -39,7 +45,8 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: varchar(10)
+                  type: int
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -70,7 +77,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: user_id
-                  type: varchar(10)
+                  type: int
                   constraints:
                     nullable: false
 
@@ -85,8 +92,9 @@ databaseChangeLog:
             tableName: address_information
             columns:
               - column:
-                  name: address_info_id
-                  type: varchar(10)
+                  name: id
+                  type: int
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -117,7 +125,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: user_id
-                  type: varchar(10)
+                  type: int
                   constraints:
                     nullable: false
 
@@ -133,7 +141,8 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: varchar(10)
+                  type: int
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
                     nullable: false
@@ -148,13 +157,13 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: attendance_doc_index
+                  name: attendance_doc_id
                   type: varchar(10)
                   constraints:
                     nullable: false
               - column:
                   name: user_id
-                  type: varchar(10)
+                  type: int
                   constraints:
                     nullable: false
 
