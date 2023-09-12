@@ -1,6 +1,5 @@
 package com.example.SangueAmigo.model.user;
 
-
 import com.example.SangueAmigo.model.user.authentication.UserRole;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,6 +27,7 @@ public class User implements UserDetails {
     private String lastname;
     private String email;
     private String password;
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 
     public User (String firstname, String lastname, String email, String password, UserRole role) {
@@ -41,9 +41,9 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(this.role == UserRole.ADMIN) return List.of(
-                new SimpleGrantedAuthority("ADMIN"),
-                new SimpleGrantedAuthority("USER"));
-        else return List.of(new SimpleGrantedAuthority("USER"));
+                new SimpleGrantedAuthority("user"),
+                new SimpleGrantedAuthority("admin"));
+        else return List.of(new SimpleGrantedAuthority("user"));
     }
 
     @Override
