@@ -157,8 +157,8 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
-                  name: attendance_doc_id
-                  type: varchar(10)
+                  name: attendance_doc
+                  type: blob
                   constraints:
                     nullable: false
               - column:
