@@ -173,3 +173,105 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: user
             constraintName: fk_user_donation
+
+  - changeSet:
+      id: 1
+      author: larissa.santana
+      changes:
+
+        - createTable:
+            tableName: blood_center
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: logo
+                  type: blob
+                  constraints:
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: operating_time
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: phone_number
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: website
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+
+        - modifyDataType:
+            tableName: address_information
+            columnName: user_id
+            newDataType: int
+            constraints:
+              nullable: true
+
+        - addColumn:
+            tableName: address_information
+            columns:
+              - column:
+                  name: blood_center_id
+                  type: int
+                  constraints:
+                    nullable: true
+
+        - addForeignKeyConstraint:
+                        baseColumnNames: blood_center_id
+                        baseTableName: address_information
+                        referencedColumnNames: id
+                        referencedTableName: blood_center
+                        constraintName: fk_blood_center_address_info
+
+        - createTable:
+            tableName: blood_stock
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: quantity
+                  type: float
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: blood_center_id
+                  type: int
+                  constraints:
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseColumnNames: blood_center_id
+            baseTableName: blood_stock
+            referencedColumnNames: id
+            referencedTableName: blood_center
+            constraintName: fk_blood_center_stock
