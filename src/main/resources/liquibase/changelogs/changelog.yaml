@@ -75,18 +75,6 @@ databaseChangeLog:
                   type: decimal(5,2)
                   constraints:
                     nullable: false
-              - column:
-                  name: user_id
-                  type: int
-                  constraints:
-                    nullable: false
-
-        - addForeignKeyConstraint:
-            baseColumnNames: user_id
-            baseTableName: biological_information
-            referencedColumnNames: id
-            referencedTableName: user
-            constraintName: fk_user_biological_info
 
         - createTable:
             tableName: address_information
@@ -100,7 +88,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: cep
-                  type: varchar(8)
+                  type: int
                   constraints:
                     nullable: false
               - column:
@@ -110,7 +98,7 @@ databaseChangeLog:
                     nullable: false
               - column:
                   name: number
-                  type: varchar(3)
+                  type: int
                   constraints:
                     nullable: false
               - column:
@@ -123,17 +111,33 @@ databaseChangeLog:
                   type: varchar(2)
                   constraints:
                     nullable: false
+
+        - addColumn:
+            tableName: user
+            columns:
               - column:
-                  name: user_id
+                  name: biological_info_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: address_info_id
                   type: int
                   constraints:
                     nullable: false
 
         - addForeignKeyConstraint:
-            baseColumnNames: user_id
-            baseTableName: address_information
+            baseColumnNames: biological_info_id
+            baseTableName: user
             referencedColumnNames: id
-            referencedTableName: user
+            referencedTableName: biological_information
+            constraintName: fk_user_biological_info
+
+        - addForeignKeyConstraint:
+            baseColumnNames: address_info_id
+            baseTableName: user
+            referencedColumnNames: id
+            referencedTableName: address_information
             constraintName: fk_user_address_info
 
         - createTable:
@@ -195,6 +199,11 @@ databaseChangeLog:
                   constraints:
                     nullable: false
               - column:
+                  name: address_info_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
                   name: name
                   type: varchar(36)
                   constraints:
@@ -215,28 +224,12 @@ databaseChangeLog:
                   constraints:
                     nullable: false
 
-        - modifyDataType:
-            tableName: address_information
-            columnName: user_id
-            newDataType: int
-            constraints:
-              nullable: true
-
-        - addColumn:
-            tableName: address_information
-            columns:
-              - column:
-                  name: blood_center_id
-                  type: int
-                  constraints:
-                    nullable: true
-
         - addForeignKeyConstraint:
-                        baseColumnNames: blood_center_id
-                        baseTableName: address_information
-                        referencedColumnNames: id
-                        referencedTableName: blood_center
-                        constraintName: fk_blood_center_address_info
+            baseColumnNames: address_info_id
+            baseTableName: blood_center
+            referencedColumnNames: id
+            referencedTableName: address_information
+            constraintName: fk_blood_center_address_info
 
         - createTable:
             tableName: blood_stock
