@@ -1,6 +1,5 @@
 package com.example.SangueAmigo.model.user;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -24,4 +23,12 @@ public class AddressInformation {
     private String city;
     private String state;
     //TODO: See how this correlation will work - private Long userId;
+
+    public AddressInformation(int cep, String street, int number, String city, String state) {
+        this.cep = cep;
+        this.street = street;
+        this.number = number;
+        this.city = city;
+        this.state = state;
+    }
 }

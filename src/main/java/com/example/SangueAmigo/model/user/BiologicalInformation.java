@@ -1,22 +1,14 @@
 package com.example.SangueAmigo.model.user;
 
-
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.sql.Date;
-import java.text.DecimalFormat;
-
-enum BiologicalSex {
-    male, female
-}
-
-enum BloodType {
-    A, B, AB, O
-}
 
 @Table(name = "biological_information")
 @Entity(name = "BiologicalInformation")
@@ -28,10 +20,22 @@ public class BiologicalInformation {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "America/Sao_Paulo")
     private Date birthday;
+    @Enumerated(EnumType.STRING)
     private BiologicalSex biologicalSex;
+    @Enumerated(EnumType.STRING)
     private BloodType bloodType;
     private boolean rhFactor;
-    private DecimalFormat weight;
+    private BigDecimal weight;
     //TODO: See how this correlation will work - private Long userId;
+
+    public BiologicalInformation(Date birthday, BiologicalSex biologicalSex,
+                                 BloodType bloodType, boolean rhFactor, BigDecimal weight) {
+        this.birthday = birthday;
+        this.biologicalSex = biologicalSex;
+        this.bloodType = bloodType;
+        this.rhFactor = rhFactor;
+        this.weight = weight;
+    }
 }

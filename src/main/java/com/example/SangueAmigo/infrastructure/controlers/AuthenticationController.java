@@ -1,11 +1,11 @@
 package com.example.SangueAmigo.infrastructure.controlers;
 
-import com.example.SangueAmigo.model.user.UserRepository;
+import com.example.SangueAmigo.model.user.*;
 import com.example.SangueAmigo.infrastructure.DTOs.AuthenticationDTO;
 import com.example.SangueAmigo.infrastructure.DTOs.LoginResponseDTO;
 import com.example.SangueAmigo.infrastructure.DTOs.RegisterDTO;
-import com.example.SangueAmigo.model.user.User;
 import com.example.SangueAmigo.service.security.TokenService;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -26,37 +26,75 @@ public class AuthenticationController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-
     @Autowired
-    private UserRepository repository;
-
+    private UserRepository userRepository;
+    @Autowired
+    private BiologicalInfoRepository biologicalInfoRepository;
+    @Autowired
+    private AddressInfoRepository addressInfoRepository;
     @Autowired
     private TokenService tokenService;
 
     @GetMapping("/seeUser") // Temporary Method
     public ResponseEntity<UserDetails> seeUser(@RequestBody @Valid AuthenticationDTO data) {
-       UserDetails userDetails = repository.findByEmail(data.email());
+       UserDetails userDetails = userRepository.findByEmail(data.email());
        return ResponseEntity.ok(userDetails);
     }
 
     @PostMapping("/register")
+    @Transactional
     public ResponseEntity<Void> register(@RequestBody @Valid RegisterDTO data) {
         logger.info("-Starting User Register-");
 
-        if (this.repository.findByEmail(data.email()) != null) {
+        if (this.userRepository.findByEmail(data.user().getEmail()) != null) {
             logger.info("E-mail already registered. Register Aborted.");
             return ResponseEntity.badRequest().build();
         }
 
-        String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
-        User newUser = new User(data.firstname(), data.lastname(), data.email(), encryptedPassword, data.role());
+        logger.info("BiologicalInfo Birthday: {}", data.biologicalInfo().getBirthday());
+        logger.info("BiologicalInfo Sex: {}", data.biologicalInfo().getBiologicalSex());
+        logger.info("BiologicalInfo Blood Type: {}", data.biologicalInfo().getBloodType());
+        logger.info("BiologicalInfo Rh Factor: {}", data.biologicalInfo().isRhFactor());
+        logger.info("BiologicalInfo Weight: {}", data.biologicalInfo().getWeight());
 
-        newUser = this.repository.save(newUser);
+        BiologicalInformation biologicalInfo = createBiologicalInfo(data.biologicalInfo());
+        this.biologicalInfoRepository.save(biologicalInfo);
+        int biologicalInfoId = biologicalInfo.getId();
+        logger.info("BiologicalInfo ID: {}", biologicalInfoId);
+
+        logger.info("AddressInfo CEP: {}", data.addressInfo().getCep());
+        logger.info("AddressInfo Street: {}", data.addressInfo().getStreet());
+        logger.info("AddressInfo Number: {}", data.addressInfo().getNumber());
+        logger.info("AddressInfo City: {}", data.addressInfo().getCity());
+        logger.info("AddressInfo State: {}", data.addressInfo().getState());
+
+        AddressInformation addressInfo = createAddressInfo(data.addressInfo());
+        this.addressInfoRepository.save(addressInfo);
+        int addressInfoId = biologicalInfo.getId();
+        logger.info("AddressInfo ID: {}", addressInfoId);
+
+        User newUser =  this.userRepository.save(createUser(data.user(), biologicalInfoId, addressInfoId));
 
         logger.info("User ID: {}", newUser.getId());
 
         logger.info("-Success Registering User-");
         return ResponseEntity.ok().build();
+    }
+
+    private static BiologicalInformation createBiologicalInfo (BiologicalInformation biologicalInfo) {
+        return new BiologicalInformation(biologicalInfo.getBirthday(), biologicalInfo.getBiologicalSex(),
+                biologicalInfo.getBloodType(), biologicalInfo.isRhFactor(), biologicalInfo.getWeight());
+    }
+
+    private static AddressInformation createAddressInfo(AddressInformation addressInfo) {
+        return new AddressInformation(addressInfo.getCep(), addressInfo.getStreet(),
+                addressInfo.getNumber(), addressInfo.getCity(), addressInfo.getState());
+    }
+
+    private static User createUser(User user, int biologicalInfoId, int addressInfoId) {
+        String encryptedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
+        return new User(user.getFirstname(), user.getLastname(), user.getEmail(),
+                encryptedPassword, user.getRole(), biologicalInfoId, addressInfoId);
     }
 
     @PostMapping("/login")
