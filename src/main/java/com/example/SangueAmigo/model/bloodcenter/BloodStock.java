@@ -1,11 +1,9 @@
 package com.example.SangueAmigo.model.bloodcenter;
 
-
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.Date;
 
 @Table(name = "blood_stock")
 @Entity(name = "BloodStock")
@@ -15,11 +13,10 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(of = "id")
 public class BloodStock {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    //TODO: Decide type String or BloodCenter
-    private String bloodCenter;
     private String type;
     private Float quantity;
+    private Date date;
+    private int bloodCenterId;
 }
