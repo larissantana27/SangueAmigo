@@ -1,5 +1,9 @@
 package com.example.SangueAmigo.infrastructure.controlers;
 
+import com.example.SangueAmigo.model.user.AddressInfoRepository;
+import com.example.SangueAmigo.model.user.AddressInformation;
+import com.example.SangueAmigo.model.user.User;
+import com.example.SangueAmigo.model.user.UserRepository;
 import com.example.SangueAmigo.service.security.BloodCenterService;
 import com.example.SangueAmigo.service.security.TokenService;
 import io.micrometer.common.lang.NonNull;
@@ -21,15 +25,34 @@ public class BloodCentersController {
     @Autowired
     private TokenService tokenService;
     @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private AddressInfoRepository addressInfoRepository;
+    @Autowired
     private BloodCenterService bloodCenterService;
 
     @GetMapping("/list")
     public ResponseEntity<String> getBloodCenterList(@NonNull HttpServletRequest request) {
         logger.info("-Starting BloodCenters List Getter-");
 
-        String result = bloodCenterService.getBloodCenterList(request);
+        AddressInformation addressInformation = getUserAddressInfo(request);
+        String result = bloodCenterService.getBloodCenterList(addressInformation);
+
         logger.info("-Success Getting BloodCenters List-");
 
         return ResponseEntity.ok(result);
+    }
+
+    public AddressInformation getUserAddressInfo(@NonNull HttpServletRequest request) {
+        String token = tokenService.recoverToken(request);
+
+        String userEmail = tokenService.getEmailFromToken(token);
+        logger.info("User Email: {}", userEmail);
+
+        User user = (User) userRepository.findByEmail(userEmail);
+        int addressInfoId = user.getAddressInfoId();
+        logger.info("User Id: {}", addressInfoId);
+
+        return addressInfoRepository.findById(addressInfoId);
     }
 }

@@ -1,52 +1,61 @@
 package com.example.SangueAmigo.service.security;
 
-import io.micrometer.common.lang.NonNull;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.dao.EmptyResultDataAccessException;
+import com.example.SangueAmigo.infrastructure.DistanceCalculator;
+import com.example.SangueAmigo.model.user.AddressInformation;
+import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
 public class BloodCenterService {
 
-    String bloodCentersQuery = "SELECT " +
-            "JSON_OBJECT( " +
-                "'bloodCenters', JSON_ARRAYAGG( " +
-                    "JSON_OBJECT( " +
-                        "'blood_center', JSON_OBJECT( " +
-                            "'logo', bc.logo, " +
-                            "'name', bc.name, " +
-                            "'address_information', JSON_OBJECT( " +
-                            "       'cep', ai.cep," +
-                            "       'street', ai.street, " +
-                            "       'number', ai.number, " +
-                            "       'city', ai.city, " +
-                            "       'state', ai.state " +
-                            "), " +
-                            "'distance', 0" +
-                        ")" +
-                    ")" +
-                ")" +
-            ") AS result " +
-            "FROM blood_center bc " +
-            "INNER JOIN address_information ai " +
-            "ON bc.address_info_id = ai.id;";
+    private final Logger logger = LoggerFactory.getLogger(BloodCenterService.class);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private DistanceCalculator distanceCalculator;
+    @Autowired
+    private Gson gson = new Gson();
 
-    public String getBloodCenterList(@NonNull HttpServletRequest request) {
+    public String getBloodCenterList(AddressInformation userAddressInfo) {
+        logger.info("-Starting BloodCenterList GET-");
+        String sql = "SELECT bc.id, bc.name, ai.street, ai.number, ai.city, ai.state FROM blood_center bc " +
+                "INNER JOIN address_information ai ON bc.address_info_id = ai.id";
 
-        String sql = bloodCentersQuery;
+        List<Map<String, Object>> bloodCenters = jdbcTemplate.queryForList(sql);
 
-        try {
-            String result = jdbcTemplate.queryForObject(sql, String.class);
-            return Objects.requireNonNullElse(result, "{}");
-        } catch (EmptyResultDataAccessException e) {
-            return "{}";
+        List<Map<String, Object>> bloodCentersWithDistance = new ArrayList<>();
+        for (Map<String, Object> bloodCenter : bloodCenters) {
+            logger.info("BloodCenter: {}", bloodCenter);
+
+            String bloodCenterStreet = String.valueOf(bloodCenter.get("street"));
+            String bloodCenterNumber = String.valueOf(bloodCenter.get("number"));
+            String bloodCenterCity = String.valueOf(bloodCenter.get("city"));
+            String bloodCenterState = String.valueOf(bloodCenter.get("state"));
+
+            AddressInformation bloodCentersAddressInfo = new AddressInformation(bloodCenterStreet,
+                    Integer.parseInt(bloodCenterNumber), bloodCenterCity, bloodCenterState);
+
+            double distance = distanceCalculator.getDistance(userAddressInfo, bloodCentersAddressInfo);
+            bloodCenter.put("distance", distance);
+            bloodCentersWithDistance.add(bloodCenter);
         }
+
+        String result = convertListToJson(bloodCentersWithDistance);
+
+        return Objects.requireNonNullElse(result, "{}");
+    }
+
+    private String convertListToJson(List<Map<String, Object>> list) {
+        return gson.toJson(list);
     }
 }
