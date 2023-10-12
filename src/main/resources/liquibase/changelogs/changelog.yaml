@@ -268,3 +268,13 @@ databaseChangeLog:
             referencedColumnNames: id
             referencedTableName: blood_center
             constraintName: fk_blood_center_stock
+
+  - changeSet:
+      id: 2
+      author: larissa.santana
+      changes:
+
+        - modifyDataType:
+            tableName: donation
+            columnName: attendance_doc
+            newDataType: longblob
