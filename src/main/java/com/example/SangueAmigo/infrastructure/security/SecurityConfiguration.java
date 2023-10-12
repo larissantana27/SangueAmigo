@@ -36,6 +36,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/test/user/**").hasAuthority("user")
                         .requestMatchers(HttpMethod.GET, "/test/admin/**").hasAuthority("admin")
                         .requestMatchers(HttpMethod.GET, "/bloodCenters/**").hasAnyAuthority("admin","user")
+                        .requestMatchers(HttpMethod.GET, "/account/**").hasAnyAuthority("admin","user")
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
