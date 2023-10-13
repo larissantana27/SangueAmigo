@@ -65,7 +65,7 @@ public class AccountController {
         logger.info("-Starting Donation Post-");
 
         String bloodCenter = data.bloodCenter();
-        Date date = getFormattedDate(data.date());
+        Date date = putFormattedDate(data.date());
         Blob attendanceDoc = transformIntoBlob(file);
         int userId = getUserIdFromToken(request);
 
@@ -82,7 +82,7 @@ public class AccountController {
         return ResponseEntity.ok().build();
     }
 
-    private Date getFormattedDate(Date date) {
+    private Date putFormattedDate(Date date) {
         try {
             SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String dateString = inputDateFormat.format(date);
@@ -125,6 +125,37 @@ public class AccountController {
         } catch (IOException | SQLException e) {
             logger.error("Error processing the file: {}", e.getMessage());
             return (Blob) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/{userId}/lastDonationDate")
+    public ResponseEntity<Date> getLastDonationDate(@NonNull HttpServletRequest request) {
+        int userId = 0;
+        try {
+            String token = tokenService.recoverToken(request);
+            if (token != null) {
+                String email = tokenService.validateToken(token);
+                User user = (User) userRepository.findByEmail(email);
+                userId = user.getId();
+            }
+            Date lastDonationDate = donationRepository.findMaxDonationDateByUserId(userId);
+            return ResponseEntity.ok(getFormattedDate(lastDonationDate));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    private Date getFormattedDate(Date date) {
+        try {
+            logger.info("Database date: {}", date);
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateString = inputDateFormat.format(date);
+            logger.info("Date string: {}", dateString);
+            logger.info("Date formatted: {}", inputDateFormat.parse(dateString));
+            return inputDateFormat.parse(dateString);
+        } catch (ParseException e) {
+            logger.error("Error formatting data: {}", e.getMessage(), e);
+            return null;
         }
     }
 }
