@@ -22,7 +22,11 @@ import javax.sql.rowset.serial.SerialBlob;
 import java.io.IOException;
 import java.sql.Blob;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 @RestController
 @RequestMapping("/account")
@@ -61,7 +65,7 @@ public class AccountController {
         logger.info("-Starting Donation Post-");
 
         String bloodCenter = data.bloodCenter();
-        Date date = data.date();
+        Date date = getFormattedDate(data.date());
         Blob attendanceDoc = transformIntoBlob(file);
         int userId = getUserIdFromToken(request);
 
@@ -76,6 +80,27 @@ public class AccountController {
 
         logger.info("-Success Posting Donation-");
         return ResponseEntity.ok().build();
+    }
+
+    private Date getFormattedDate(Date date) {
+        try {
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateString = inputDateFormat.format(date);
+
+            SimpleDateFormat outputDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            outputDateFormat.setTimeZone(TimeZone.getTimeZone("America/Recife"));
+
+            String formattedDateString = dateString + " 00:00:00";
+            Date formattedDate = outputDateFormat.parse(formattedDateString);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(formattedDate);
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            return calendar.getTime();
+        } catch (ParseException e) {
+            logger.error("Error formatting data: {}", e.getMessage(), e);
+            return null;
+        }
     }
 
     private int getUserIdFromToken (@NonNull HttpServletRequest request) {
