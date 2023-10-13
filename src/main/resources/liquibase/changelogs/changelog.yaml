@@ -278,3 +278,13 @@ databaseChangeLog:
             tableName: donation
             columnName: attendance_doc
             newDataType: longblob
+
+  - changeSet:
+      id: 3
+      author: larissa.santana
+      changes:
+
+        - modifyDataType:
+            tableName: blood_stock
+            columnName: type
+            newDataType: varchar(3)
