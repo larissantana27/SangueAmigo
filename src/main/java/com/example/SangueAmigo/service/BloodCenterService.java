@@ -1,4 +1,4 @@
-package com.example.SangueAmigo.service.security;
+package com.example.SangueAmigo.service;
 
 import com.example.SangueAmigo.infrastructure.DistanceCalculator;
 import com.example.SangueAmigo.model.user.AddressInformation;

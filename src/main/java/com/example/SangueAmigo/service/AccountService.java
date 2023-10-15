@@ -1,4 +1,4 @@
-package com.example.SangueAmigo.service.security;
+package com.example.SangueAmigo.service;
 
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;

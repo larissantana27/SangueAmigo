@@ -1,4 +1,4 @@
-package com.example.SangueAmigo.model.Location;
+package com.example.SangueAmigo.model.location;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
