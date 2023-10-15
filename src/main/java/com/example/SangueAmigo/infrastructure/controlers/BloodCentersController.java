@@ -4,7 +4,7 @@ import com.example.SangueAmigo.model.user.AddressInfoRepository;
 import com.example.SangueAmigo.model.user.AddressInformation;
 import com.example.SangueAmigo.model.user.User;
 import com.example.SangueAmigo.model.user.UserRepository;
-import com.example.SangueAmigo.service.security.BloodCenterService;
+import com.example.SangueAmigo.service.BloodCenterService;
 import com.example.SangueAmigo.service.security.TokenService;
 import io.micrometer.common.lang.NonNull;
 import jakarta.servlet.http.HttpServletRequest;

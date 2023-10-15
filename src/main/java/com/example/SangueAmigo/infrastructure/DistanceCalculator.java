@@ -1,6 +1,6 @@
 package com.example.SangueAmigo.infrastructure;
 
-import com.example.SangueAmigo.model.Location.Coordinates;
+import com.example.SangueAmigo.model.location.Coordinates;
 import com.example.SangueAmigo.model.user.AddressInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
