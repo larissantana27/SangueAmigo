@@ -183,4 +183,21 @@ public class AccountController {
         calendar.add(Calendar.MONTH, 3);
         return calendar.getTime();
     }
+
+    @GetMapping("/{userId}/donationQuantity")
+    public ResponseEntity<Integer> getDonationQuantity(@NonNull HttpServletRequest request) {
+        int userId = 0;
+        try {
+            String token = tokenService.recoverToken(request);
+            if (token != null) {
+                String email = tokenService.validateToken(token);
+                User user = (User) userRepository.findByEmail(email);
+                userId = user.getId();
+            }
+            int donationQuantity = donationRepository.getDonationQuantityByUserId(userId);
+            return ResponseEntity.ok(donationQuantity);
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
 }

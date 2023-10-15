@@ -12,4 +12,7 @@ public interface DonationRepository extends JpaRepository<Donation, String> {
 
     @Query("SELECT MAX(d.date) FROM Donation d WHERE d.user_id = :userId")
     Date findLastDonationDateByUserId(@Param("userId") int userId);
+
+    @Query("SELECT COUNT(*) FROM Donation d WHERE d.user_id = :userId")
+    int getDonationQuantityByUserId(@Param("userId") int userId);
 }
