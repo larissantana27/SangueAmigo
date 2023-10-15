@@ -43,6 +43,30 @@ public class BloodCentersController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping("/detailedList")
+    public ResponseEntity<String> getDetailedBloodCenterList(@NonNull HttpServletRequest request) {
+        logger.info("-Starting DetailedBloodCenters List Getter-");
+
+        String result = bloodCenterService.getDetailedBloodCenterList();
+
+        logger.info("-Success Getting DetailedBloodCenters List-");
+
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/{bloodCenterId}/bloodstock")
+    public ResponseEntity<String> getBloodCenterStock(@NonNull HttpServletRequest request) {
+        logger.info("-Starting DetailedBloodCenters List Getter-");
+
+        logger.info("Request: {}", request);
+
+        String result = bloodCenterService.getBloodCenterStock();
+
+        logger.info("-Success Getting DetailedBloodCenters List-");
+
+        return ResponseEntity.ok(result);
+    }
+
     public AddressInformation getUserAddressInfo(@NonNull HttpServletRequest request) {
         String token = tokenService.recoverToken(request);
 
