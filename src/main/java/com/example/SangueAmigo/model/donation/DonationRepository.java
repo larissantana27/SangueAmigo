@@ -11,5 +11,5 @@ import java.util.Date;
 public interface DonationRepository extends JpaRepository<Donation, String> {
 
     @Query("SELECT MAX(d.date) FROM Donation d WHERE d.user_id = :userId")
-    Date findMaxDonationDateByUserId(@Param("userId") int userId);
+    Date findLastDonationDateByUserId(@Param("userId") int userId);
 }

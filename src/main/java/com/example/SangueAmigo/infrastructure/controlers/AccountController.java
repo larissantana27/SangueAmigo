@@ -138,8 +138,26 @@ public class AccountController {
                 User user = (User) userRepository.findByEmail(email);
                 userId = user.getId();
             }
-            Date lastDonationDate = donationRepository.findMaxDonationDateByUserId(userId);
+            Date lastDonationDate = donationRepository.findLastDonationDateByUserId(userId);
             return ResponseEntity.ok(getFormattedDate(lastDonationDate));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
+    }
+
+    @GetMapping("/{userId}/nextDonationDate")
+    public ResponseEntity<Date> getNextDonationDate(@NonNull HttpServletRequest request) {
+        int userId = 0;
+        try {
+            String token = tokenService.recoverToken(request);
+            if (token != null) {
+                String email = tokenService.validateToken(token);
+                User user = (User) userRepository.findByEmail(email);
+                userId = user.getId();
+            }
+            Date lastDonationDate = donationRepository.findLastDonationDateByUserId(userId);
+            Date nextDonationDate = plusMonths(lastDonationDate);
+            return ResponseEntity.ok(getFormattedDate(nextDonationDate));
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
@@ -157,5 +175,12 @@ public class AccountController {
             logger.error("Error formatting data: {}", e.getMessage(), e);
             return null;
         }
+    }
+
+    public Date plusMonths (Date lastDonationDate) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(lastDonationDate);
+        calendar.add(Calendar.MONTH, 3);
+        return calendar.getTime();
     }
 }
