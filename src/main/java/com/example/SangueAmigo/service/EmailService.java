@@ -16,8 +16,8 @@ import java.time.LocalDateTime;
 @Service
 public class EmailService {
 
-//    @Value("${spring.mail.username}")
-//    private String fromEmail;
+    @Value("${spring.mail.username}")
+    private String fromEmail;
 
     @Autowired
     EmailRepository emailRepository;
@@ -27,10 +27,11 @@ public class EmailService {
     @Transactional
     public void sendEmail(Email email) {
         email.setSendDate(LocalDateTime.now());
+        email.setEmailFrom(fromEmail);
         try{
             SimpleMailMessage message = new SimpleMailMessage();
 
-            message.setFrom(email.getEmailFrom());
+            message.setFrom(fromEmail);
             message.setTo(email.getEmailTo());
             message.setSubject(email.getSubject());
             message.setText(email.getText());

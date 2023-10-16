@@ -31,4 +31,11 @@ public class Email implements Serializable {
     private String text;
     private LocalDateTime sendDate;
     private EmailStatus emailStatus;
+
+    public Email (String ownerRef, String emailTo, String subject, String text) {
+        this.ownerRef = ownerRef;
+        this.emailTo = emailTo;
+        this.subject = subject;
+        this.text = text;
+    }
 }
