@@ -288,3 +288,54 @@ databaseChangeLog:
             tableName: blood_stock
             columnName: type
             newDataType: varchar(3)
+
+  - changeSet:
+      id: 4
+      author: larissa.santana
+      changes:
+
+        - createTable:
+            tableName: email
+            columns:
+              - column:
+                  name: id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: owner_ref
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email_from
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email_to
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: subject
+                  type: varchar(36)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: text
+                  type: text
+                  constraints:
+                    nullable: false
+              - column:
+                  name: send_date
+                  type: date
+                  constraints:
+                    nullable: false
+              - column:
+                  name: email_status
+                  type: text
+                  constraints:
+                    nullable: false
