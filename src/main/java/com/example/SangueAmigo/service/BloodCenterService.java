@@ -30,7 +30,7 @@ public class BloodCenterService {
     public String getBloodCenterList(AddressInformation userAddressInfo) {
         logger.info("-Starting BloodCenterList GET-");
 
-        String sql = "SELECT bc.id, bc.name, ai.street, ai.number, ai.city, ai.state FROM blood_center bc " +
+        String sql = "SELECT bc.id, bc.name, ai.street, ai.number, ai.city, ai.state, ai.cep FROM blood_center bc " +
                 "INNER JOIN address_information ai ON bc.address_info_id = ai.id";
 
         List<Map<String, Object>> bloodCenters = jdbcTemplate.queryForList(sql);
@@ -43,8 +43,9 @@ public class BloodCenterService {
             String bloodCenterNumber = String.valueOf(bloodCenter.get("number"));
             String bloodCenterCity = String.valueOf(bloodCenter.get("city"));
             String bloodCenterState = String.valueOf(bloodCenter.get("state"));
+            String bloodCenterCep =  String.valueOf(bloodCenter.get("cep"));
 
-            AddressInformation bloodCentersAddressInfo = new AddressInformation(bloodCenterStreet,
+            AddressInformation bloodCentersAddressInfo = new AddressInformation(Integer.parseInt(bloodCenterCep), bloodCenterStreet,
                     Integer.parseInt(bloodCenterNumber), bloodCenterCity, bloodCenterState);
 
             double distance = distanceCalculator.getDistance(userAddressInfo, bloodCentersAddressInfo);

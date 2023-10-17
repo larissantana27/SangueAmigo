@@ -31,11 +31,4 @@ public class AddressInformation {
         this.city = city;
         this.state = state;
     }
-
-    public AddressInformation(String street, int number, String city, String state) {
-        this.street = street;
-        this.number = number;
-        this.city = city;
-        this.state = state;
-    }
 }
