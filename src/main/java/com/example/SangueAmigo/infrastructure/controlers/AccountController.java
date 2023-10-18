@@ -58,76 +58,6 @@ public class AccountController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/donation")
-    public ResponseEntity<Void> donation(@NonNull HttpServletRequest request,
-                                         @RequestPart("data") DonationDTO data,
-                                         @RequestPart("file") MultipartFile file) {
-        logger.info("-Starting Donation Post-");
-
-        String bloodCenter = data.bloodCenter();
-        Date date = putFormattedDate(data.date());
-        Blob attendanceDoc = transformIntoBlob(file);
-        int userId = getUserIdFromToken(request);
-
-        logger.info("Donation bloodCenter: {}", bloodCenter);
-        logger.info("Donation date: {}", date);
-        logger.info("Donation attendanceDocId: {}", attendanceDoc);
-        logger.info("Donation userId: {}", userId);
-
-        Donation donation = new Donation(bloodCenter, date, attendanceDoc, userId);
-
-        this.donationRepository.save(donation);
-
-        logger.info("-Success Posting Donation-");
-        return ResponseEntity.ok().build();
-    }
-
-    private Date putFormattedDate(Date date) {
-        try {
-            SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            String dateString = inputDateFormat.format(date);
-
-            SimpleDateFormat outputDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            outputDateFormat.setTimeZone(TimeZone.getTimeZone("America/Recife"));
-
-            String formattedDateString = dateString + " 00:00:00";
-            Date formattedDate = outputDateFormat.parse(formattedDateString);
-
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(formattedDate);
-            calendar.add(Calendar.DAY_OF_MONTH, 1);
-            return calendar.getTime();
-        } catch (ParseException e) {
-            logger.error("Error formatting data: {}", e.getMessage(), e);
-            return null;
-        }
-    }
-
-    private int getUserIdFromToken (@NonNull HttpServletRequest request) {
-        try {
-            String token = tokenService.recoverToken(request);
-            if (token != null) {
-                String email = tokenService.validateToken(token);
-                User user = (User) userRepository.findByEmail(email);
-                return user.getId();
-            }
-        } catch (Exception e) {
-            logger.error("It was not possible to get this user authentication:", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build().getStatusCode().value();
-        }
-        return 0;
-    }
-
-    private Blob transformIntoBlob (@RequestPart("file") MultipartFile file) {
-        try {
-            byte[] fileBytes = file.getBytes();
-            return new SerialBlob(fileBytes);
-        } catch (IOException | SQLException e) {
-            logger.error("Error processing the file: {}", e.getMessage());
-            return (Blob) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-
     @GetMapping("/{userId}/lastDonationDate")
     public ResponseEntity<Date> getLastDonationDate(@NonNull HttpServletRequest request) {
         int userId = 0;
@@ -198,6 +128,76 @@ public class AccountController {
             return ResponseEntity.ok(donationQuantity);
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
+        }
+    }
+
+    @PostMapping("/donation")
+    public ResponseEntity<Void> donation(@NonNull HttpServletRequest request,
+                                         @RequestPart("data") DonationDTO data,
+                                         @RequestPart("file") MultipartFile file) {
+        logger.info("-Starting Donation Post-");
+
+        String bloodCenter = data.bloodCenter();
+        Date date = putFormattedDate(data.date());
+        Blob attendanceDoc = transformIntoBlob(file);
+        int userId = getUserIdFromToken(request);
+
+        logger.info("Donation bloodCenter: {}", bloodCenter);
+        logger.info("Donation date: {}", date);
+        logger.info("Donation attendanceDocId: {}", attendanceDoc);
+        logger.info("Donation userId: {}", userId);
+
+        Donation donation = new Donation(bloodCenter, date, attendanceDoc, userId);
+
+        this.donationRepository.save(donation);
+
+        logger.info("-Success Posting Donation-");
+        return ResponseEntity.ok().build();
+    }
+
+    private Date putFormattedDate(Date date) {
+        try {
+            SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            String dateString = inputDateFormat.format(date);
+
+            SimpleDateFormat outputDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            outputDateFormat.setTimeZone(TimeZone.getTimeZone("America/Recife"));
+
+            String formattedDateString = dateString + " 00:00:00";
+            Date formattedDate = outputDateFormat.parse(formattedDateString);
+
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(formattedDate);
+            calendar.add(Calendar.DAY_OF_MONTH, 1);
+            return calendar.getTime();
+        } catch (ParseException e) {
+            logger.error("Error formatting data: {}", e.getMessage(), e);
+            return null;
+        }
+    }
+
+    private int getUserIdFromToken (@NonNull HttpServletRequest request) {
+        try {
+            String token = tokenService.recoverToken(request);
+            if (token != null) {
+                String email = tokenService.validateToken(token);
+                User user = (User) userRepository.findByEmail(email);
+                return user.getId();
+            }
+        } catch (Exception e) {
+            logger.error("It was not possible to get this user authentication:", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build().getStatusCode().value();
+        }
+        return 0;
+    }
+
+    private Blob transformIntoBlob (@RequestPart("file") MultipartFile file) {
+        try {
+            byte[] fileBytes = file.getBytes();
+            return new SerialBlob(fileBytes);
+        } catch (IOException | SQLException e) {
+            logger.error("Error processing the file: {}", e.getMessage());
+            return (Blob) ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }
