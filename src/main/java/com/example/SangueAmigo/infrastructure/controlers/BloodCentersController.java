@@ -43,6 +43,7 @@ public class BloodCentersController {
         return ResponseEntity.ok(result);
     }
 
+    //TODO: Fix this because I think is not working properly
     @GetMapping("/detailedList")
     public ResponseEntity<String> getDetailedBloodCenterList(@NonNull HttpServletRequest request) {
         logger.info("-Starting DetailedBloodCenters List Getter-");

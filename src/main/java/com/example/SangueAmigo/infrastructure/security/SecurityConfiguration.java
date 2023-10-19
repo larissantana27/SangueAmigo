@@ -35,6 +35,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.GET, "/auth/seeUser").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/passwordSetup").permitAll()
                         .requestMatchers(HttpMethod.GET, "/test/all/**").hasAnyAuthority("admin","user")
                         .requestMatchers(HttpMethod.GET, "/test/user/**").hasAuthority("user")
                         .requestMatchers(HttpMethod.GET, "/test/admin/**").hasAuthority("admin")

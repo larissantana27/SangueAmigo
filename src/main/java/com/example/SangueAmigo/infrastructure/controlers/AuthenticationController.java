@@ -1,5 +1,6 @@
 package com.example.SangueAmigo.infrastructure.controlers;
 
+import com.example.SangueAmigo.infrastructure.DTOs.PasswordDTO;
 import com.example.SangueAmigo.model.user.*;
 import com.example.SangueAmigo.infrastructure.DTOs.AuthenticationDTO;
 import com.example.SangueAmigo.infrastructure.DTOs.LoginResponseDTO;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 @RestController
 @RequestMapping("/auth")
@@ -41,6 +43,7 @@ public class AuthenticationController {
        return ResponseEntity.ok(userDetails);
     }
 
+    // TODO: test if this != should be ==
     @PostMapping("/register")
     @Transactional
     public ResponseEntity<Void> register(@RequestBody @Valid RegisterDTO data) {
@@ -113,5 +116,28 @@ public class AuthenticationController {
 
         logger.info("-Success Logging User-");
         return ResponseEntity.ok(new LoginResponseDTO(token));
+    }
+
+    @Transactional
+    @PutMapping("/passwordSetup")
+    public ResponseEntity<Void> passwordSetup(@RequestBody @Valid PasswordDTO data) {
+        User user = (User) userRepository.findByEmail(data.email());
+
+        if (user == null) {
+            logger.info("E-mail not registered.");
+            return ResponseEntity.badRequest().build();
+        }
+
+        String oldPassword = userRepository.getPassword(user.getId());
+        logger.info("Old Password by ID: {}", oldPassword);
+
+        String encryptedPassword = new BCryptPasswordEncoder().encode("123456");
+        userRepository.setPassword(user.getId(), encryptedPassword);
+
+        User updatedUser = (User) userRepository.findByEmail(data.email());
+        String newPassword = userRepository.getPassword(updatedUser.getId());
+        logger.info("New Password by ID: {}", newPassword);
+
+        return ResponseEntity.ok().build();
     }
 }
