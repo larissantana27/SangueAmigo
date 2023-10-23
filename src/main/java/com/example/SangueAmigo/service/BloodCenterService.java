@@ -78,7 +78,7 @@ public class BloodCenterService {
         return gson.toJson(list);
     }
 
-    public String getBloodCenterStock() {
+    public String getBloodCenterStock(int bloodCenterId) {
         logger.info("-Starting BloodCenterStock GET-");
 
         String sql = "SELECT" +
@@ -91,7 +91,8 @@ public class BloodCenterService {
                 "       SUM(CASE WHEN bs.type = 'AB-' THEN bs.quantity ELSE 0 END)," +
                 "       SUM(CASE WHEN bs.type = 'O-' THEN bs.quantity ELSE 0 END)" +
                 "FROM blood_stock bs " +
-                "INNER JOIN blood_center bc ON bs.blood_center_id = bc.id;";
+                "INNER JOIN blood_center bc ON bs.blood_center_id = bc.id " +
+                "WHERE bs.blood_center_id = " + bloodCenterId;
 
         List<Map<String, Object>> bloodCenterStock = jdbcTemplate.queryForList(sql);
 

@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,12 +57,11 @@ public class BloodCentersController {
     }
 
     @GetMapping("/{bloodCenterId}/bloodstock")
-    public ResponseEntity<String> getBloodCenterStock(@NonNull HttpServletRequest request) {
+    public ResponseEntity<String> getBloodCenterStock(@PathVariable int bloodCenterId) {
         logger.info("-Starting DetailedBloodCenters List Getter-");
 
-        logger.info("Request: {}", request);
-
-        String result = bloodCenterService.getBloodCenterStock();
+        logger.info("BloodCenterId: {}", bloodCenterId);
+        String result = bloodCenterService.getBloodCenterStock(bloodCenterId);
 
         logger.info("-Success Getting DetailedBloodCenters List-");
 
