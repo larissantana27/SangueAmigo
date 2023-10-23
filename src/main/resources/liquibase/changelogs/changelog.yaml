@@ -339,3 +339,13 @@ databaseChangeLog:
                   type: text
                   constraints:
                     nullable: false
+
+  - changeSet:
+      id: 5
+      author: larissa.santana
+      changes:
+
+        - modifyDataType:
+            tableName: address_information
+            columnName: street
+            newDataType: varchar(255)
