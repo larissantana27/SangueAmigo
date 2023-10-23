@@ -25,7 +25,6 @@ public class Donation {
     private Date date;
     private Blob attendanceDoc;
     private int user_id;
-    //TODO: See how this correlation will work - private Long userId;
 
     public Donation (String bloodCenter, Date date, Blob attendanceDoc, int user_id) {
         this.bloodCenter = bloodCenter;

@@ -28,7 +28,6 @@ public class BiologicalInformation {
     private BloodType bloodType;
     private boolean rhFactor;
     private BigDecimal weight;
-    //TODO: See how this correlation will work - private Long userId;
 
     public BiologicalInformation(Date birthday, BiologicalSex biologicalSex,
                                  BloodType bloodType, boolean rhFactor, BigDecimal weight) {

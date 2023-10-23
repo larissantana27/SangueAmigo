@@ -22,7 +22,6 @@ public class AddressInformation {
     private int number;
     private String city;
     private String state;
-    //TODO: See how this correlation will work - private Long userId;
 
     public AddressInformation(int cep, String street, int number, String city, String state) {
         this.cep = cep;
