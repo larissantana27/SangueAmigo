@@ -1,5 +1,6 @@
 package com.example.SangueAmigo.infrastructure.controlers;
 
+import com.example.SangueAmigo.model.bloodcenter.BloodCenterRepository;
 import com.example.SangueAmigo.model.user.AddressInfoRepository;
 import com.example.SangueAmigo.model.user.AddressInformation;
 import com.example.SangueAmigo.model.user.User;
@@ -31,6 +32,8 @@ public class BloodCentersController {
     private AddressInfoRepository addressInfoRepository;
     @Autowired
     private BloodCenterService bloodCenterService;
+    @Autowired
+    private BloodCenterRepository bloodCenterRepository;
 
     @GetMapping("/list")
     public ResponseEntity<String> getBloodCenterList(@NonNull HttpServletRequest request) {
@@ -79,5 +82,25 @@ public class BloodCentersController {
         logger.info("User Id: {}", addressInfoId);
 
         return addressInfoRepository.findById(addressInfoId);
+    }
+
+    @GetMapping("/mostNeeding")
+    public ResponseEntity<String> getMostNeedingBloodCenter(@NonNull HttpServletRequest request) {
+        logger.info("-Starting Getter-");
+
+        String token = tokenService.recoverToken(request);
+        String userEmail = tokenService.getEmailFromToken(token);
+        User user = (User) userRepository.findByEmail(userEmail);
+
+        String rhFactorType = userRepository.getRhFactorType(user.getId());
+        String signal = (rhFactorType.equals("1")) ? "-" : "+";
+        String userBloodType = userRepository.getBloodType(user.getId(), signal);
+        logger.info("User Blood Type: {}", userBloodType);
+        String result = bloodCenterRepository.getMostNeedingBloodCenter(userBloodType);
+        logger.info("Most Needing Blood Center: {}", result);
+
+        logger.info("-Success Getting Most Needing Blood Center-");
+
+        return ResponseEntity.ok(result);
     }
 }

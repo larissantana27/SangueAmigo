@@ -18,4 +18,14 @@ public interface UserRepository extends JpaRepository<User, String> {
 
     @Query("SELECT password FROM User u WHERE u.id = :userId")
     String getPassword(@Param("userId") int userId);
+
+    @Query("SELECT bi.rhFactor FROM BiologicalInformation bi " +
+            "INNER JOIN User u ON u.biologicalInfoId = bi.id " +
+            "WHERE u.id = :userId")
+    String getRhFactorType(@Param("userId") int userId);
+
+    @Query("SELECT CONCAT(bi.bloodType, :signal) FROM BiologicalInformation bi " +
+        "INNER JOIN User u ON u.biologicalInfoId = bi.id " +
+        "WHERE u.id = :userId")
+    String getBloodType(@Param("userId") int userId, @Param("signal") String signal);
 }
