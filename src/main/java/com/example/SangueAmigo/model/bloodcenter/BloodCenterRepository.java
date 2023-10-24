@@ -13,4 +13,7 @@ public interface BloodCenterRepository extends JpaRepository<BloodCenter, String
             "WHERE bs.type = :userBloodType " +
             "ORDER BY bs.quantity ASC, bc.id ASC LIMIT 1")
     String getMostNeedingBloodCenter(@Param("userBloodType") String userBloodType);
+
+    @Query("SELECT bs.type FROM BloodStock bs ORDER BY bs.quantity ASC LIMIT 1")
+    String getMostNeedingBloodType();
 }
