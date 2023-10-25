@@ -61,7 +61,7 @@ public class BloodCenterService {
     public String getDetailedBloodCenterList() {
         logger.info("-Starting DetailedBloodCenterList GET-");
 
-        String sql = "SELECT bc.id, bc.logo, " +
+        String sql = "SELECT bc.id, bc.logo, bc.name, " +
                 "ai.street, ai.number, ai.city, ai.state, " +
                 "bc.operating_time, bc.phone_number, bc.website " +
                 "FROM blood_center bc " +
